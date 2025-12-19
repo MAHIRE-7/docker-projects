@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .todo-item { display: flex; align-items: center; margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .todo-item.completed { text-decoration: line-through; opacity: 0.6; }
+        input[type="text"] { flex: 1; padding: 10px; margin-right: 10px; }
+        button { padding: 10px 15px; margin: 0 5px; cursor: pointer; }
+        .delete-btn { background: #ff4444; color: white; border: none; }
+        .toggle-btn { background: #4CAF50; color: white; border: none; }
+        .add-btn { background: #008CBA; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <h1>Todo App</h1>
+    
+    <div>
+        <input type="text" id="todoInput" placeholder="Enter a new todo...">
+        <button class="add-btn" onclick="addTodo()">Add</button>
+    </div>
+    
+    <div id="todoList"></div>
+
+    <script>
+        let todos = [];
+
+        async function loadTodos() {
+            const response = await fetch('/api/todos');
+            todos = await response.json();
+            renderTodos();
+        }
+
+        async function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const response = await fetch('/api/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            
+            input.value = '';
+            loadTodos();
+        }
+
+        async function toggleTodo(id) {
+            await fetch(`/api/todos/${id}`, { method: 'PUT' });
+            loadTodos();
+        }
+
+        async function deleteTodo(id) {
+            await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+            loadTodos();
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            list.innerHTML = todos.map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <span style="flex: 1">${todo.text}</span>
+                    <button class="toggle-btn" onclick="toggleTodo(${todo.id})">
+                        ${todo.completed ? 'Undo' : 'Done'}
+                    </button>
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('todoInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        loadTodos();
+    </script>
+</body>
+</html>
