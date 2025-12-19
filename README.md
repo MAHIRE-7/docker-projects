@@ -6,6 +6,7 @@ This repository contains Docker-based projects.
 
 - **todo-app** - Node.js todo application without database
 - **flask-app** - Python Flask web application
+- **react-app** - React frontend application with multi-stage build
 
 ## Usage
 
