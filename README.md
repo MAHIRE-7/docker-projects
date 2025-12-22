@@ -10,6 +10,7 @@ This repository contains Docker-based projects.
 - **data-app** - Flask app demonstrating Docker volumes
 - **nginx-app** - Static site served by Nginx
 - **image-gallery** - Node.js image upload and gallery app
+- **blog-app** - Full-stack blog with authentication and database
 
 ## Usage
 
