@@ -9,6 +9,7 @@ This repository contains Docker-based projects.
 - **react-app** - React frontend application with multi-stage build
 - **data-app** - Flask app demonstrating Docker volumes
 - **nginx-app** - Static site served by Nginx
+- **image-gallery** - Node.js image upload and gallery app
 
 ## Usage
 
