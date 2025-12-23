@@ -14,6 +14,8 @@ This repository contains Docker-based projects.
 - **logging-app** - Structured logging app with ELK stack integration
 - **chat-app** - Real-time chat application with WebSocket support
 - **logs-monitor-app** - Log monitoring application for AKS deployment
+- **python-tasks-app** - Python Flask task manager with SQLite database
+- **notes-app** - Node.js notes application with MySQL database
 
 ## Usage
 

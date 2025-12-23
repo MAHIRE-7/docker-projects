@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes App</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .note-form { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .note-form input, .note-form textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .note-form button { padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .note-form button:hover { background: #0056b3; }
+        .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .note { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .note h3 { margin: 0 0 10px 0; color: #333; }
+        .note p { margin: 0 0 15px 0; color: #666; line-height: 1.5; }
+        .note-meta { font-size: 12px; color: #999; margin-bottom: 15px; }
+        .note-actions { display: flex; gap: 10px; }
+        .btn-edit { background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .btn-edit:hover { background: #218838; }
+        .btn-delete:hover { background: #c82333; }
+        .empty-state { text-align: center; color: #666; margin: 50px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 Notes App</h1>
+        <p>Create and manage your notes</p>
+    </div>
+
+    <div class="note-form">
+        <h3>Add New Note</h3>
+        <form id="noteForm">
+            <input type="text" id="title" placeholder="Note title" required>
+            <textarea id="content" placeholder="Note content" rows="4" required></textarea>
+            <button type="submit">Add Note</button>
+        </form>
+    </div>
+
+    <div id="notesContainer" class="notes-grid"></div>
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <h3>No notes yet</h3>
+        <p>Create your first note above!</p>
+    </div>
+
+    <script>
+        let editingId = null;
+
+        async function loadNotes() {
+            try {
+                const response = await fetch('/api/notes');
+                const notes = await response.json();
+                displayNotes(notes);
+            } catch (error) {
+                console.error('Error loading notes:', error);
+            }
+        }
+
+        function displayNotes(notes) {
+            const container = document.getElementById('notesContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (notes.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            container.innerHTML = notes.map(note => `
+                <div class="note">
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <div class="note-meta">
+                        Created: ${new Date(note.created_at).toLocaleString()}
+                        ${note.updated_at !== note.created_at ? 
+                          `<br>Updated: ${new Date(note.updated_at).toLocaleString()}` : ''}
+                    </div>
+                    <div class="note-actions">
+                        <button class="btn-edit" onclick="editNote(${note.id}, '${note.title.replace(/'/g, "\\'")}', '${note.content.replace(/'/g, "\\'")}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteNote(${note.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('noteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            
+            try {
+                const url = editingId ? `/api/notes/${editingId}` : '/api/notes';
+                const method = editingId ? 'PUT' : 'POST';
+                
+                await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content })
+                });
+                
+                document.getElementById('noteForm').reset();
+                editingId = null;
+                document.querySelector('.note-form button').textContent = 'Add Note';
+                loadNotes();
+            } catch (error) {
+                console.error('Error saving note:', error);
+            }
+        });
+
+        function editNote(id, title, content) {
+            editingId = id;
+            document.getElementById('title').value = title;
+            document.getElementById('content').value = content;
+            document.querySelector('.note-form button').textContent = 'Update Note';
+        }
+
+        async function deleteNote(id) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                try {
+                    await fetch(`/api/notes/${id}`, { method: 'DELETE' });
+                    loadNotes();
+                } catch (error) {
+                    console.error('Error deleting note:', error);
+                }
+            }
+        }
+
+        // Load notes on page load
+        loadNotes();
+    </script>
+</body>
+</html>
