@@ -31,13 +31,13 @@ Simple notes application built with Node.js and MySQL database.
 
 ### Start MySQL first:
 ```bash
-docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=notes_db --network my_task -p 3306:3306 mysql:8.0 
+docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=notes_db --network my-task -p 3306:3306 mysql:8.0 
 ```
 
 ### Build and run app:
 ```bash
 docker build -t notes-app .
-docker run -p 3000:3000 --network my_task notes-app
+docker run -d -p 3000:3000 --network my-task notes-app
 ```
 
 ### With custom MySQL connection:
