@@ -11,6 +11,9 @@ This repository contains Docker-based projects.
 - **nginx-app** - Static site served by Nginx
 - **image-gallery** - Node.js image upload and gallery app
 - **blog-app** - Full-stack blog with authentication and database
+- **logging-app** - Structured logging app with ELK stack integration
+- **chat-app** - Real-time chat application with WebSocket support
+- **logs-monitor-app** - Log monitoring application for AKS deployment
 
 ## Usage
 
