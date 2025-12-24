@@ -1,17 +1,11 @@
 FROM node:18-alpine
-
 WORKDIR /app
-
-COPY package*.json ./
+COPY package.json /app/
 RUN npm install
-
-COPY . .
-
+COPY . /app/
 ENV MYSQL_HOST=mysql
 ENV MYSQL_USER=root
 ENV MYSQL_PASSWORD=root
-ENV MYSQL_DB=notes_db
-ENV PORT=3000
+ENV MYSQL_DB=bookmarks_db
 EXPOSE 3000
-
 CMD ["npm", "start"]

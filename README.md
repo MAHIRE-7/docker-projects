@@ -16,6 +16,7 @@ This repository contains Docker-based projects.
 - **logs-monitor-app** - Log monitoring application for AKS deployment
 - **python-tasks-app** - Python Flask task manager with SQLite database
 - **notes-app** - Node.js notes application with MySQL database
+- **bookmarks-app** - Node.js bookmark manager with MySQL database
 
 ## Usage
 
