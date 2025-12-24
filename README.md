@@ -17,6 +17,7 @@ This repository contains Docker-based projects.
 - **python-tasks-app** - Python Flask task manager with SQLite database
 - **notes-app** - Node.js notes application with MySQL database
 - **bookmarks-app** - Node.js bookmark manager with MySQL database
+- **inventory-app** - Python Flask inventory system with MariaDB database
 
 ## Usage
 

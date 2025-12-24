@@ -7,11 +7,12 @@ RUN npm install
 
 COPY . .
 
-ENV MYSQL_HOST=mysql
-ENV MYSQL_USER=root
-ENV MYSQL_PASSWORD=root
-ENV MYSQL_DB=notes_db
-ENV PORT=3000
+ENV MYSQL_HOST=mysql \
+    MYSQL_USER=root \
+    MYSQL_PASSWORD=root \
+    MYSQL_DB=notes_db \
+    PORT=3000
+    
 EXPOSE 3000
 
 CMD ["npm", "start"]
