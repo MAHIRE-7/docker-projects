@@ -18,6 +18,8 @@ This repository contains Docker-based projects.
 - **notes-app** - Node.js notes application with MySQL database
 - **bookmarks-app** - Node.js bookmark manager with MySQL database
 - **inventory-app** - Python Flask inventory system with MariaDB database
+- **go-blog-app** - Go blog application with PostgreSQL database
+- **php-tasks-app** - PHP task manager with PostgreSQL database
 
 ## Usage
 
