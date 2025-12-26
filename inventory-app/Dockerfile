@@ -3,7 +3,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 COPY . /app/
-ENV MARIADB_HOST=mariadb \
+ENV MARIADB_HOST=db \
     MARIADB_USER=root \
     MARIADB_PASSWORD=root \
     MARIADB_DB=inventory_db

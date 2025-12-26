@@ -22,19 +22,12 @@ Real-time chat application using WebSocket technology for instant messaging.
 ```bash
 docker build -t chat-app .
 docker run -p 3000:3000 chat-app
+
+OR
+
+docker compose up
 ```
 
-### Docker Compose:
-```yaml
-version: '3.8'
-services:
-  chat-app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-```
 
 ## Docker Concepts Demonstrated
 

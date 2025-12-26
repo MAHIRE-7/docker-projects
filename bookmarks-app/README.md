@@ -40,17 +40,20 @@ docker run -d -p 3306:3306 --network bookmark-app-nw -e MYSQL_ROOT_PASSWORD=root
 ### Build and run bookmarks app:
 ```bash
 docker build -t bookmarks-app .
-docker run -p 4000:4000 --link mysql bookmarks-app
+docker run -p 3000:3000 --link mysql bookmarks-app
+
+OR 
+
+
+docker compose up --build -d
 ```
 
 ## Docker Concepts
 
-- **Different port** (4000) to run alongside notes app
-- **Same MySQL instance** can host multiple databases
-- **Container linking** for database connection
+
 - **Environment variables** for configuration
 
-Visit: http://localhost:4000
+Visit: http://localhost:3000
 
 **Test the app:**
 1. Add bookmarks with URLs and categories

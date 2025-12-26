@@ -25,6 +25,10 @@ Write a Dockerfile to:
 ```bash
 docker build -t image-gallery .
 docker run -p 3000:3000 -v gallery-uploads:/app/uploads image-gallery
+
+OR
+
+docker-compose up --build
 ```
 
 **Key Docker concepts:**

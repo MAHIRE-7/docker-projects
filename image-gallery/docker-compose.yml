@@ -1,0 +1,10 @@
+services:
+  image-gallery:
+    build: .
+    ports:
+    - "3000:3000"
+    volumes:
+      - image-db:/app/uploads/
+volumes:
+  image-db:
+    external: true

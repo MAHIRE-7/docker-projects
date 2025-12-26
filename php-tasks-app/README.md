@@ -35,7 +35,7 @@ docker run -d --name postgres  -e POSTGRES_PASSWORD=postgres   -e POSTGRES_DB=ta
 ### Build and run PHP app:
 ```bash
 docker build -t php-tasks-app .
-docker run -p 9000:80 --network php-tsk-nw
+docker run -p 9000:80 --network php-tsk-nwa
 ```
 
 ## Docker Concepts

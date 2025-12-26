@@ -1,0 +1,12 @@
+services:
+  chat-app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - blog-data:/app/data
+      - blog-uploads:/app/uploads
+
+volumes:
+  blog-data:
+  blog-uploads:

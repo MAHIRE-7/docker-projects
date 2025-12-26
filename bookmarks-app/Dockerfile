@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json /app/
 RUN npm install
 COPY . /app/
-ENV MYSQL_HOST=mysql
+ENV MYSQL_HOST=mysql-db
 ENV MYSQL_USER=root
 ENV MYSQL_PASSWORD=root
 ENV MYSQL_DB=bookmarks_db

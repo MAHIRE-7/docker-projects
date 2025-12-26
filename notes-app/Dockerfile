@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-ENV MYSQL_HOST=mysql \
+ENV MYSQL_HOST=db \
     MYSQL_USER=root \
     MYSQL_PASSWORD=root \
     MYSQL_DB=notes_db \

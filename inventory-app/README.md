@@ -32,12 +32,19 @@ Product inventory management system built with Python Flask and MariaDB.
 ### Start MariaDB:
 ```bash
 docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=inventory_db -v maria-db:/var/lib/mysql --network inv-app-nw -p 3308:3306 mariadb:10.6
+
 ```
 
 ### Build and run inventory app:
 ```bash
 docker build -t inventory-app .
 docker run -d -p 5001:5001 --network inv-app-nw inventory-app
+```
+
+OR
+
+```bash
+docker compose up --build
 ```
 
 ## Docker Concepts

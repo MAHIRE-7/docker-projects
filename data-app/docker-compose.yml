@@ -1,0 +1,10 @@
+services:
+  data-app:
+    build: .
+    ports:
+    - "5000:5000"
+    volumes:
+      - data-volume:/app/data/
+volumes:
+  data-volume:
+    external: true
