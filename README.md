@@ -23,6 +23,7 @@ A comprehensive collection of Docker projects organized by complexity level for 
 
 - **notes-app** - Node.js notes app with MySQL database
 - **bookmarks-app** - Node.js bookmark manager with MySQL
+- **mongo-tasks-app** - Node.js task manager with MongoDB
 - **chat-app** - Real-time WebSocket chat application
 - **inventory-app** - Python Flask inventory system with MariaDB
 
@@ -66,7 +67,7 @@ find . -name "Dockerfile" -o -name "docker-compose.yml" -o -name "docker-compose
 ## 🛠 Technologies Covered
 
 - **Languages**: Node.js, Python, PHP, HTML/CSS/JS
-- **Databases**: MySQL, PostgreSQL, MariaDB, SQLite
+- **Databases**: MySQL, PostgreSQL, MariaDB, MongoDB, SQLite
 - **Web Servers**: Nginx, Apache, Express
 - **Concepts**: Multi-stage builds, volumes, networks, health checks
 

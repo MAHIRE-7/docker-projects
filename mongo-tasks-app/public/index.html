@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Digital Diary</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Georgia', serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        .diary-container {
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: #f9f7f4;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .diary-header {
+            background: #8b4513;
+            color: #f9f7f4;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .diary-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23654321" opacity="0.3"/></svg>') repeat;
+        }
+        .diary-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .diary-date { opacity: 0.9; font-style: italic; }
+        .diary-content {
+            padding: 40px;
+            background: linear-gradient(to right, #f9f7f4 0%, #f9f7f4 60px, #e8e6e3 60px, #e8e6e3 62px, #f9f7f4 62px);
+        }
+        .entry-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            border-left: 4px solid #8b4513;
+        }
+        .entry-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            background: transparent;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .entry-input:focus { border-bottom-color: #8b4513; }
+        .add-btn {
+            background: #8b4513;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .add-btn:hover { background: #654321; transform: translateY(-2px); }
+        .entry {
+            background: rgba(255,255,255,0.8);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #d4af37;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        .entry:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .entry-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .entry-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .completed .entry-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: #999;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .delete-btn:hover { background: #c82333; }
+        .entry-date { font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="diary-container">
+        <div class="diary-header">
+            <h1 class="diary-title">📖 My Digital Diary</h1>
+            <div class="diary-date" id="currentDate"></div>
+        </div>
+        <div class="diary-content">
+            <div class="entry-form">
+                <input type="text" id="taskInput" class="entry-input" placeholder="Write your thoughts...">
+                <button onclick="addTask()" class="add-btn">✍️ Add Entry</button>
+            </div>
+            <div id="tasks"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        async function loadTasks() {
+            const response = await fetch('/api/tasks');
+            const tasks = await response.json();
+            const tasksDiv = document.getElementById('tasks');
+            tasksDiv.innerHTML = tasks.map(task => `
+                <div class="entry ${task.completed ? 'completed' : ''}">
+                    <div class="entry-text" onclick="toggleTask('${task._id}')">${task.title}</div>
+                    <div class="entry-meta">
+                        <span class="entry-date">${new Date(task.createdAt).toLocaleDateString()}</span>
+                        <button onclick="deleteTask('${task._id}')" class="delete-btn">🗑️ Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function addTask() {
+            const input = document.getElementById('taskInput');
+            if (!input.value.trim()) return;
+            await fetch('/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: input.value.trim() })
+            });
+            input.value = '';
+            loadTasks();
+        }
+
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTask();
+        });
+
+        async function toggleTask(id) {
+            const response = await fetch(`/api/tasks/${id}`);
+            const task = await response.json();
+            await fetch(`/api/tasks/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ completed: !task.completed })
+            });
+            loadTasks();
+        }
+
+        async function deleteTask(id) {
+            await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+            loadTasks();
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>
