@@ -1,0 +1,49 @@
+services:
+  blog-app:
+    build: .
+    ports:
+    - "3000:3000"
+    environment:
+      - JWT_SECRET=181623c3423b8465
+      - MYSQL_HOST=mysql-db
+      - MYSQL_DATABASE=blogdb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - PORT=3000
+    volumes:
+      - blog-app-uploads:/app/uploads
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      - blog-app-network
+    restart: on-failure
+    
+
+  mysql-db:
+    image: mysql:8
+    ports: 
+    - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=blogdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 40s
+    networks:
+      - blog-app-network
+
+#  Network Definition
+networks:
+  blog-app-network:
+    driver: bridge
+
+# Volumes for MySQL
+volumes:    
+  mysql-data:
+  blog-app-uploads:

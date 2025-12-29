@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📰 NewsHub - Breaking News & Updates</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: #f5f5f5; }
+        
+        .top-bar { background: #d32f2f; color: white; padding: 8px 0; font-size: 12px; }
+        .top-bar .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .header { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header .container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2rem; font-weight: bold; color: #d32f2f; }
+        .auth-section { display: flex; gap: 10px; }
+        
+        .nav-bar { background: #1976d2; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; }
+        .nav-item { color: white; padding: 15px 20px; text-decoration: none; transition: background 0.3s; }
+        .nav-item:hover, .nav-item.active { background: #1565c0; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .main-content { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .news-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .news-card:hover { transform: translateY(-5px); }
+        .news-image { width: 100%; height: 200px; object-fit: cover; }
+        .news-content { padding: 15px; }
+        .news-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .news-meta { color: #666; font-size: 0.9rem; margin-bottom: 10px; }
+        .news-excerpt { color: #555; line-height: 1.5; }
+        
+        .sidebar { background: white; padding: 20px; border-radius: 8px; height: fit-content; }
+        .sidebar h3 { color: #d32f2f; margin-bottom: 15px; border-bottom: 2px solid #d32f2f; padding-bottom: 5px; }
+        
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #1976d2; color: white; }
+        .btn-secondary { background: #666; color: white; }
+        .btn:hover { opacity: 0.9; }
+        
+        .hidden { display: none; }
+        
+        .breaking-news { background: #d32f2f; color: white; padding: 10px 0; }
+        .breaking-news .container { display: flex; align-items: center; }
+        .breaking-label { background: #fff; color: #d32f2f; padding: 5px 10px; margin-right: 15px; font-weight: bold; }
+        .breaking-text { animation: scroll-left 30s linear infinite; }
+        
+        @keyframes scroll-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .category-badge { background: #1976d2; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; }
+        
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+            .nav-container { flex-wrap: wrap; }
+            .header .container { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            📅 ${new Date().toLocaleDateString()} | 🌡️ Mumbai 28°C | 💹 Sensex: 73,000 ↗️
+        </div>
+    </div>
+    
+    <div class="breaking-news">
+        <div class="container">
+            <span class="breaking-label">BREAKING</span>
+            <div class="breaking-text">Latest updates from around the world • Stay informed with real-time news</div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="container">
+            <div class="logo">📰 NewsHub</div>
+            <div class="auth-section">
+                <span id="userInfo" class="hidden"></span>
+                <button id="loginBtn" class="btn btn-primary" onclick="showLogin()">Login</button>
+                <button id="registerBtn" class="btn btn-secondary" onclick="showRegister()">Register</button>
+                <button id="logoutBtn" class="btn btn-secondary hidden" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="/" class="nav-item active">🏠 Home</a>
+            <a href="/politics" class="nav-item">🏛️ Politics</a>
+            <a href="/sports" class="nav-item">⚽ Sports</a>
+            <a href="/business" class="nav-item">💼 Business</a>
+            <a href="/entertainment" class="nav-item">🎬 Entertainment</a>
+            <a href="/technology" class="nav-item">💻 Technology</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="authForms" class="hidden" style="background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+            <div id="loginForm">
+                <h3>Login to NewsHub</h3>
+                <div style="margin: 15px 0;">
+                    <label>Username:</label>
+                    <input type="text" id="loginUsername" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label>Password:</label>
+                    <input type="password" id="loginPassword" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()" style="margin-left: 10px;">Register</button>
+            </div>
+            
+            <div id="registerForm" class="hidden">
+                <h3>Join NewsHub</h3>
+                <div style="margin: 15px 0;">
+                    <label>Username:</label>
+                    <input type="text" id="regUsername" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label>Email:</label>
+                    <input type="email" id="regEmail" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label>Password:</label>
+                    <input type="password" id="regPassword" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <button class="btn btn-primary" onclick="register()">Register</button>
+                <button class="btn btn-secondary" onclick="showLogin()" style="margin-left: 10px;">Login</button>
+            </div>
+        </div>
+
+        <div id="postForm" class="hidden" style="background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+            <h3>📝 Publish News Article</h3>
+            <div style="margin: 15px 0;">
+                <label>Headline:</label>
+                <input type="text" id="postTitle" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div style="margin: 15px 0;">
+                <label>Category:</label>
+                <select id="postCategory" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="general">General</option>
+                    <option value="politics">Politics</option>
+                    <option value="sports">Sports</option>
+                    <option value="business">Business</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="technology">Technology</option>
+                </select>
+            </div>
+            <div style="margin: 15px 0;">
+                <label>Article Content:</label>
+                <textarea id="postContent" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; height: 120px;"></textarea>
+            </div>
+            <div style="margin: 15px 0;">
+                <label>Featured Image:</label>
+                <input type="file" id="postImage" accept="image/*" style="width: 100%; padding: 10px; margin-top: 5px;">
+            </div>
+            <button class="btn btn-primary" onclick="createPost()">📰 Publish Article</button>
+        </div>
+
+        <div class="main-content">
+            <div>
+                <h2 style="margin-bottom: 20px; color: #333;">📈 Latest News</h2>
+                <div id="posts" class="news-grid"></div>
+            </div>
+            
+            <div class="sidebar">
+                <h3>🔥 Trending Topics</h3>
+                <div style="margin-bottom: 20px;">
+                    <div style="padding: 10px 0; border-bottom: 1px solid #eee;">Election Updates</div>
+                    <div style="padding: 10px 0; border-bottom: 1px solid #eee;">Cricket World Cup</div>
+                    <div style="padding: 10px 0; border-bottom: 1px solid #eee;">Stock Market</div>
+                    <div style="padding: 10px 0; border-bottom: 1px solid #eee;">Weather Alert</div>
+                </div>
+                
+                <h3>📊 Quick Stats</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                    <div>📰 Total Articles: <strong id="totalPosts">0</strong></div>
+                    <div>👥 Active Users: <strong>1,247</strong></div>
+                    <div>📈 Today's Views: <strong>45,678</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/me');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    showLoggedIn();
+                } else {
+                    showLoggedOut();
+                }
+            } catch (err) {
+                showLoggedOut();
+            }
+        }
+
+        function showLoggedIn() {
+            document.getElementById('authForms').classList.add('hidden');
+            document.getElementById('postForm').classList.remove('hidden');
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('registerBtn').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userInfo').textContent = `Welcome, ${currentUser.username}!`;
+        }
+
+        function showLoggedOut() {
+            document.getElementById('authForms').classList.remove('hidden');
+            document.getElementById('postForm').classList.add('hidden');
+            document.getElementById('loginBtn').classList.remove('hidden');
+            document.getElementById('registerBtn').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentUser = data.user;
+                showLoggedIn();
+                loadPosts();
+            } else {
+                alert('Login failed');
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            
+            if (response.ok) {
+                alert('Registration successful! Please login.');
+                showLogin();
+            } else {
+                alert('Registration failed');
+            }
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            currentUser = null;
+            showLoggedOut();
+            loadPosts();
+        }
+
+        async function createPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const category = document.getElementById('postCategory').value;
+            const image = document.getElementById('postImage').files[0];
+            
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('category', category);
+            if (image) formData.append('image', image);
+            
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                document.getElementById('postCategory').value = 'general';
+                document.getElementById('postImage').value = '';
+                loadPosts();
+            }
+        }
+
+        async function deletePost(id) {
+            if (!confirm('Delete this post?')) return;
+            await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+            loadPosts();
+        }
+
+        async function loadPosts() {
+            const response = await fetch('/api/posts');
+            const posts = await response.json();
+            const postsDiv = document.getElementById('posts');
+            
+            postsDiv.innerHTML = posts.map(post => `
+                <div class="news-card">
+                    ${post.image ? `<img src="/uploads/${post.image}" class="news-image" alt="News image">` : ''}
+                    <div class="news-content">
+                        <div class="news-title">${post.title}</div>
+                        <div class="news-meta">
+                            <span class="category-badge">${post.category || 'General'}</span>
+                            By ${post.username} • ${new Date(post.created_at).toLocaleDateString()}
+                            ${currentUser && currentUser.username === post.username ? 
+                                `<button class="btn btn-primary" onclick="deletePost(${post.id})" style="padding: 4px 8px; font-size: 11px; margin-left: 10px;">Delete</button>` : ''}
+                        </div>
+                        <div class="news-excerpt">${post.content.substring(0, 150)}...</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('totalPosts').textContent = posts.length;
+        }
+
+        checkAuth();
+        loadPosts();
+    </script>
+</body>
+</html>

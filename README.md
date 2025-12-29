@@ -31,7 +31,7 @@ A comprehensive collection of Docker projects organized by complexity level for 
 ### **Level 4: Expert (Complex Applications)**
 *Learn advanced Docker concepts and production deployment*
 
-- **blog-app** - Full-stack blog with authentication and file uploads
+- **L4-blog-app** - Full-stack blog with authentication and file uploads
 - **react-app** - React frontend with multi-stage build optimization
 
 ## 🚀 Quick Start
