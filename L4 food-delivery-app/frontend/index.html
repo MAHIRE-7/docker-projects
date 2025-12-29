@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodExpress - Food Delivery Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">FoodExpress</div>
+            <nav class="nav">
+                <span id="userInfo" class="hidden"></span>
+                <button id="loginBtn" onclick="showLogin()">Login</button>
+                <button id="registerBtn" onclick="showRegister()">Register</button>
+                <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+                <button onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
+                <button id="ordersBtn" class="hidden" onclick="showOrders()">My Orders</button>
+                <button id="restaurantBtn" class="hidden" onclick="showRestaurantPanel()">My Restaurant</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h1>Delicious Food Delivered Fast</h1>
+                <p>Order from your favorite restaurants</p>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search restaurants or cuisines...">
+                    <button onclick="searchRestaurants()">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="filters">
+            <div class="container">
+                <h3>Filter by Cuisine</h3>
+                <div class="filter-buttons">
+                    <button onclick="filterByCuisine('')" class="active">All</button>
+                    <button onclick="filterByCuisine('italian')">Italian</button>
+                    <button onclick="filterByCuisine('chinese')">Chinese</button>
+                    <button onclick="filterByCuisine('indian')">Indian</button>
+                    <button onclick="filterByCuisine('mexican')">Mexican</button>
+                    <button onclick="filterByCuisine('american')">American</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="restaurants">
+            <div class="container">
+                <h2>Popular Restaurants</h2>
+                <div id="restaurantsList" class="restaurants-grid"></div>
+            </div>
+        </section>
+
+        <section id="menuSection" class="menu-section hidden">
+            <div class="container">
+                <div class="restaurant-header">
+                    <button onclick="backToRestaurants()" class="back-btn">← Back</button>
+                    <div id="restaurantInfo"></div>
+                </div>
+                <div id="menuItems" class="menu-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="loginForm">
+                <h3>Login to FoodExpress</h3>
+                <form onsubmit="login(event)">
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <p><a href="#" onclick="showRegister()">Create account</a></p>
+            </div>
+            
+            <div id="registerForm" class="hidden">
+                <h3>Join FoodExpress</h3>
+                <form onsubmit="register(event)">
+                    <input type="text" id="regFullName" placeholder="Full Name" required>
+                    <input type="text" id="regUsername" placeholder="Username" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                    <select id="regRole">
+                        <option value="customer">Customer</option>
+                        <option value="restaurant">Restaurant Owner</option>
+                    </select>
+                    <input type="password" id="regPassword" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <p><a href="#" onclick="showLogin()">Already have account?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Your Cart</h3>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <strong>Total: $<span id="cartTotal">0.00</span></strong>
+            </div>
+            <button id="checkoutBtn" onclick="checkout()">Place Order</button>
+        </div>
+    </div>
+
+    <!-- Restaurant Panel Modal -->
+    <div id="restaurantModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('restaurant-info')">Restaurant Info</button>
+                <button class="tab-btn" onclick="showTab('add-menu')">Add Menu Item</button>
+            </div>
+            
+            <div id="restaurant-info" class="tab-content">
+                <h3>Add Restaurant</h3>
+                <form onsubmit="addRestaurant(event)">
+                    <input type="text" id="restName" placeholder="Restaurant Name" required>
+                    <textarea id="restDescription" placeholder="Description" required></textarea>
+                    <select id="restCuisine" required>
+                        <option value="">Select Cuisine Type</option>
+                        <option value="italian">Italian</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="indian">Indian</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="american">American</option>
+                    </select>
+                    <input type="text" id="restAddress" placeholder="Address" required>
+                    <input type="tel" id="restPhone" placeholder="Phone" required>
+                    <input type="number" id="restDeliveryTime" placeholder="Delivery Time (minutes)" required>
+                    <input type="number" id="restDeliveryFee" placeholder="Delivery Fee" step="0.01" required>
+                    <input type="number" id="restMinOrder" placeholder="Minimum Order" step="0.01" required>
+                    <input type="file" id="restImage" accept="image/*">
+                    <button type="submit">Add Restaurant</button>
+                </form>
+            </div>
+            
+            <div id="add-menu" class="tab-content hidden">
+                <h3>Add Menu Item</h3>
+                <form onsubmit="addMenuItem(event)">
+                    <select id="menuRestaurant" required>
+                        <option value="">Select Restaurant</option>
+                    </select>
+                    <input type="text" id="menuName" placeholder="Item Name" required>
+                    <textarea id="menuDescription" placeholder="Description" required></textarea>
+                    <input type="number" id="menuPrice" placeholder="Price" step="0.01" required>
+                    <input type="text" id="menuCategory" placeholder="Category (e.g., Appetizer, Main)" required>
+                    <input type="number" id="menuPrepTime" placeholder="Preparation Time (minutes)" required>
+                    <input type="file" id="menuImage" accept="image/*">
+                    <button type="submit">Add Menu Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
