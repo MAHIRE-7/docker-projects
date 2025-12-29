@@ -35,6 +35,8 @@ A comprehensive collection of Docker projects organized by complexity level for 
 
 - **L4-blog-app** - Full-stack blog with authentication and file uploads
 - **react-app** - React frontend with multi-stage build optimization
+- **food-delivery-app** - Full-stack Food delivery app with authentication and file uploads and Mysql  + MongoDB databases
+- **amazon-clone** - Full stack Shopping system with Mysql + MongoDB
 
 ## 🚀 Quick Start
 

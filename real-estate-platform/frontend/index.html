@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealEstate Pro - Property Management Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">RealEstate Pro</div>
+            <nav class="nav">
+                <a href="#" onclick="showSection('home')">Home</a>
+                <a href="#" onclick="showSection('properties')">Properties</a>
+                <a href="#" onclick="showSection('agents')">Agents</a>
+                <span id="userInfo" class="hidden"></span>
+                <button id="loginBtn" onclick="showLogin()">Login</button>
+                <button id="registerBtn" onclick="showRegister()">Register</button>
+                <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+                <button id="favoritesBtn" class="hidden" onclick="showFavorites()">Favorites</button>
+                <button id="agentPanelBtn" class="hidden" onclick="showAgentPanel()">Agent Panel</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="homeSection" class="section">
+        <div class="hero">
+            <div class="container">
+                <h1>Find Your Dream Property</h1>
+                <p>Discover the perfect home, apartment, or commercial space</p>
+                <div class="search-form">
+                    <select id="searchType">
+                        <option value="">Property Type</option>
+                        <option value="house">House</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="land">Land</option>
+                    </select>
+                    <input type="text" id="searchCity" placeholder="City">
+                    <input type="number" id="searchMinPrice" placeholder="Min Price">
+                    <input type="number" id="searchMaxPrice" placeholder="Max Price">
+                    <select id="searchBedrooms">
+                        <option value="">Bedrooms</option>
+                        <option value="1">1+</option>
+                        <option value="2">2+</option>
+                        <option value="3">3+</option>
+                        <option value="4">4+</option>
+                    </select>
+                    <button onclick="searchProperties()">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <section class="featured-properties">
+                <h2>Featured Properties</h2>
+                <div id="featuredProperties" class="properties-grid"></div>
+            </section>
+        </div>
+    </section>
+
+    <!-- Properties Section -->
+    <section id="propertiesSection" class="section hidden">
+        <div class="container">
+            <div class="section-header">
+                <h2>All Properties</h2>
+                <div class="filters">
+                    <select id="filterType" onchange="filterProperties()">
+                        <option value="">All Types</option>
+                        <option value="house">House</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="land">Land</option>
+                    </select>
+                    <select id="filterStatus" onchange="filterProperties()">
+                        <option value="">All Status</option>
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="rented">Rented</option>
+                    </select>
+                </div>
+            </div>
+            <div id="propertiesList" class="properties-grid"></div>
+        </div>
+    </section>
+
+    <!-- Agents Section -->
+    <section id="agentsSection" class="section hidden">
+        <div class="container">
+            <h2>Our Agents</h2>
+            <div id="agentsList" class="agents-grid"></div>
+        </div>
+    </section>
+
+    <!-- Property Detail Modal -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="propertyDetail"></div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="loginForm">
+                <h3>Login to RealEstate Pro</h3>
+                <form onsubmit="login(event)">
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <p><a href="#" onclick="showRegister()">Create account</a></p>
+            </div>
+            
+            <div id="registerForm" class="hidden">
+                <h3>Join RealEstate Pro</h3>
+                <form onsubmit="register(event)">
+                    <input type="text" id="regFullName" placeholder="Full Name" required>
+                    <input type="text" id="regUsername" placeholder="Username" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                    <select id="regRole">
+                        <option value="buyer">Buyer</option>
+                        <option value="agent">Real Estate Agent</option>
+                    </select>
+                    <input type="password" id="regPassword" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <p><a href="#" onclick="showLogin()">Already have account?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Panel Modal -->
+    <div id="agentModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('add-property')">Add Property</button>
+                <button class="tab-btn" onclick="showTab('my-properties')">My Properties</button>
+                <button class="tab-btn" onclick="showTab('inquiries')">Inquiries</button>
+                <button class="tab-btn" onclick="showTab('profile')">Profile</button>
+            </div>
+            
+            <div id="add-property" class="tab-content">
+                <h3>Add New Property</h3>
+                <form onsubmit="addProperty(event)">
+                    <div class="form-row">
+                        <input type="text" id="propTitle" placeholder="Property Title" required>
+                        <select id="propType" required>
+                            <option value="">Property Type</option>
+                            <option value="house">House</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="land">Land</option>
+                        </select>
+                    </div>
+                    <textarea id="propDescription" placeholder="Description" required></textarea>
+                    <div class="form-row">
+                        <input type="number" id="propPrice" placeholder="Price ($)" required>
+                        <input type="number" id="propBedrooms" placeholder="Bedrooms">
+                        <input type="number" id="propBathrooms" placeholder="Bathrooms">
+                        <input type="number" id="propArea" placeholder="Area (sq ft)" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="propAddress" placeholder="Address" required>
+                        <input type="text" id="propCity" placeholder="City" required>
+                        <input type="text" id="propState" placeholder="State" required>
+                        <input type="text" id="propZip" placeholder="ZIP Code" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="propYear" placeholder="Year Built">
+                        <input type="number" id="propParking" placeholder="Parking Spaces">
+                    </div>
+                    <input type="text" id="propAmenities" placeholder="Amenities (comma separated)">
+                    <input type="file" id="propImages" accept="image/*" multiple>
+                    <button type="submit">Add Property</button>
+                </form>
+            </div>
+            
+            <div id="my-properties" class="tab-content hidden">
+                <h3>My Properties</h3>
+                <div id="agentProperties"></div>
+            </div>
+            
+            <div id="inquiries" class="tab-content hidden">
+                <h3>Property Inquiries</h3>
+                <div id="agentInquiries"></div>
+            </div>
+            
+            <div id="profile" class="tab-content hidden">
+                <h3>Agent Profile</h3>
+                <form onsubmit="updateAgentProfile(event)">
+                    <input type="text" id="agentLicense" placeholder="License Number">
+                    <input type="text" id="agentAgency" placeholder="Agency Name">
+                    <input type="text" id="agentSpecialization" placeholder="Specialization">
+                    <input type="number" id="agentExperience" placeholder="Years of Experience">
+                    <textarea id="agentBio" placeholder="Bio"></textarea>
+                    <input type="file" id="agentImage" accept="image/*">
+                    <button type="submit">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inquiry Modal -->
+    <div id="inquiryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Property Inquiry</h3>
+            <form onsubmit="submitInquiry(event)">
+                <input type="hidden" id="inquiryPropertyId">
+                <input type="text" id="inquiryName" placeholder="Your Name" required>
+                <input type="email" id="inquiryEmail" placeholder="Email" required>
+                <input type="tel" id="inquiryPhone" placeholder="Phone" required>
+                <select id="inquiryType" required>
+                    <option value="">Inquiry Type</option>
+                    <option value="viewing">Schedule Viewing</option>
+                    <option value="info">Request Information</option>
+                    <option value="purchase">Purchase Interest</option>
+                    <option value="rent">Rental Interest</option>
+                </select>
+                <textarea id="inquiryMessage" placeholder="Message" required></textarea>
+                <button type="submit">Send Inquiry</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
