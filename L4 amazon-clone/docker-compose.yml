@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # Presentation Tier - Frontend (Nginx)
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Application Tier - API Server
+  api:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - JWT_SECRET=amazon-secret-key-2024
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=amazon_users
+      - MONGO_URL=mongodb://mongo:27017/amazon_store
+      - REDIS_HOST=redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads-data:/app/uploads
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Data Tier - MySQL (User Management)
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=amazon_users
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./config/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Data Tier - MongoDB (Products, Orders, Cart)
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=amazon_store
+    volumes:
+      - mongo-data:/data/db
+      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/init.js
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Cache Tier - Redis
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Load Balancer (Optional)
+  loadbalancer:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/loadbalancer.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+  # Monitoring (Optional)
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    networks:
+      - amazon-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local
+  mongo-data:
+    driver: local
+  redis-data:
+    driver: local
+  uploads-data:
+    driver: local
+
+networks:
+  amazon-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
