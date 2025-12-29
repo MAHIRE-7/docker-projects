@@ -1,0 +1,15 @@
+{
+  "name": "dual-db-app",
+  "version": "1.0.0",
+  "description": "User management with MySQL and activity logs with MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "mongoose": "^7.5.0",
+    "body-parser": "^1.20.2"
+  }
+}

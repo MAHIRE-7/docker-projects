@@ -24,6 +24,7 @@ A comprehensive collection of Docker projects organized by complexity level for 
 - **notes-app** - Node.js notes app with MySQL database
 - **bookmarks-app** - Node.js bookmark manager with MySQL
 - **mongo-tasks-app** - Node.js task manager with MongoDB
+- **dual-db-app** - User management with MySQL + activity logs with MongoDB
 - **chat-app** - Real-time WebSocket chat application
 - **inventory-app** - Python Flask inventory system with MariaDB
 

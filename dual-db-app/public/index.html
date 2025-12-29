@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dual Database App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; }
+        .section { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section h2 { color: #34495e; margin-bottom: 20px; display: flex; align-items: center; }
+        .db-badge { font-size: 12px; padding: 4px 8px; border-radius: 12px; margin-left: 10px; color: white; }
+        .mysql { background: #e67e22; }
+        .mongo { background: #27ae60; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        button { padding: 12px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        .user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #ecf0f1; border-radius: 5px; margin-bottom: 10px; }
+        .user-info { flex: 1; }
+        .user-name { font-weight: bold; color: #2c3e50; }
+        .user-email { color: #7f8c8d; font-size: 14px; }
+        .delete-btn { background: #e74c3c; padding: 8px 15px; font-size: 12px; }
+        .delete-btn:hover { background: #c0392b; }
+        .log-item { padding: 12px; border-left: 4px solid #3498db; background: #f8f9fa; margin-bottom: 8px; border-radius: 0 5px 5px 0; }
+        .log-action { font-weight: bold; color: #2c3e50; }
+        .log-details { color: #7f8c8d; font-size: 14px; margin-top: 5px; }
+        .log-time { color: #95a5a6; font-size: 12px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗄️ Dual Database Application</h1>
+            <p class="subtitle">User Management with MySQL + Activity Logging with MongoDB</p>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h2>👥 Users <span class="db-badge mysql">MySQL</span></h2>
+                <div class="form-group">
+                    <input type="text" id="userName" placeholder="Full Name">
+                    <input type="email" id="userEmail" placeholder="Email Address">
+                    <button onclick="addUser()">Add User</button>
+                </div>
+                <div id="users"></div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Activity Logs <span class="db-badge mongo">MongoDB</span></h2>
+                <button onclick="loadLogs()" style="margin-bottom: 15px;">🔄 Refresh Logs</button>
+                <div id="logs"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            const response = await fetch('/api/users');
+            const users = await response.json();
+            const usersDiv = document.getElementById('users');
+            usersDiv.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-email">${user.email}</div>
+                    </div>
+                    <button onclick="deleteUser(${user.id})" class="delete-btn">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        async function addUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            if (!name || !email) return;
+            
+            await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email })
+            });
+            
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            loadUsers();
+            loadLogs();
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user?')) return;
+            await fetch(`/api/users/${id}`, { method: 'DELETE' });
+            loadUsers();
+            loadLogs();
+        }
+
+        async function loadLogs() {
+            const response = await fetch('/api/logs');
+            const logs = await response.json();
+            const logsDiv = document.getElementById('logs');
+            logsDiv.innerHTML = logs.map(log => `
+                <div class="log-item">
+                    <div class="log-action">${log.action.replace('_', ' ')}</div>
+                    <div class="log-details">${log.details}</div>
+                    <div class="log-time">${new Date(log.timestamp).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        loadUsers();
+        loadLogs();
+    </script>
+</body>
+</html>
