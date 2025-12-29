@@ -27,6 +27,7 @@ A comprehensive collection of Docker projects organized by complexity level for 
 - **dual-db-app** - User management with MySQL + activity logs with MongoDB
 - **chat-app** - Real-time WebSocket chat application
 - **inventory-app** - Python Flask inventory system with MariaDB
+ **blog-app** - Full-stack blog with authentication and file uploads
 
 ### **Level 4: Expert (Complex Applications)**
 *Learn advanced Docker concepts and production deployment*
