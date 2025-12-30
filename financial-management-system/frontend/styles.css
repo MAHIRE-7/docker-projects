@@ -1,0 +1,119 @@
+/* Custom styles for Financial Management System */
+
+.modal {
+    z-index: 1000;
+}
+
+.nav-btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Chart containers */
+canvas {
+    max-height: 300px !important;
+}
+
+/* Account cards hover effect */
+.bg-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Form focus states */
+input:focus, select:focus, textarea:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Button hover effects */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+/* Success/Error states */
+.success {
+    background-color: #10B981;
+    color: white;
+}
+
+.error {
+    background-color: #EF4444;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .text-3xl {
+        font-size: 1.875rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .bg-gray-50 {
+        background-color: #1F2937;
+    }
+    
+    .bg-white {
+        background-color: #374151;
+    }
+    
+    .text-gray-800 {
+        color: #F9FAFB;
+    }
+    
+    .text-gray-600 {
+        color: #D1D5DB;
+    }
+}

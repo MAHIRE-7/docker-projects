@@ -37,6 +37,8 @@ A comprehensive collection of Docker projects organized by complexity level for 
 - **react-app** - React frontend with multi-stage build optimization
 - **food-delivery-app** - Full-stack Food delivery app with authentication and file uploads and Mysql  + MongoDB databases
 - **amazon-clone** - Full stack Shopping system with Mysql + MongoDB
+- **healthcare-management-system** - Multi-tier medical management platform with patient records, appointments, and role-based access
+- **financial-management-system** - Flask-based financial management platform with investment tracking, budgeting, and advisory features 
 
 ## 🚀 Quick Start
 
